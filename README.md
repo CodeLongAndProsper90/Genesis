@@ -4,11 +4,11 @@ Genesis is a virtual assistant desined to increase your productivity in the bash
 
 1. Features of Genesis:
 
-..* Custom "Wake word" support
-..* Execute shell commands on-the-fly
-..* Custom reply voice
+* Custom "Wake word" support
+* Execute shell commands on-the-fly
+* Custom reply voice
 
 2. How to obtain Genesis:
 
-..1. Using [github](https://github.com/CodeLongAndProsper90/Genesis)
-..2. Using the Genesis installer (WIP)
+* Using [github](https://github.com/CodeLongAndProsper90/Genesis)
+* 2. Using the Genesis installer (WIP)
