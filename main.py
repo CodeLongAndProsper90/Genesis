@@ -4,22 +4,20 @@ from gtts import gTTS # google text to speech
 import os # to save/open files 
 import wolframalpha # to calculate strings into formula 
 from selenium import webdriver # to control browser operations 
+from playsound import playsound
 
-num = 1
 def assistant_speaks(output): 
-	global num 
 
 	# num to rename every audio file 
 	# with different name to remove ambiguity 
-	num += 1
-	print("Genisis : ", output)
-
-	toSpeak = gTTS(text = output, lang ='en', slow = False) 
+        print("Genisis : ", output)
+    
+        toSpeak = gTTS(text = output, lang ='en', slow = False) 
 	# saving the audio file given by google text to speech 
-	toSpeak.save('.output.mp3') 
+        toSpeak.save('.output.mp3') 
 	
-	# playsound package is used to play the same file. 
-	os.system('mpg321 -q .output.mp3')
+	# playsound package is used to play the same file.
+        os.system('play -q .output.mp3')
 
 
 
