@@ -5,19 +5,27 @@ import os # to save/open files
 import wolframalpha # to calculate strings into formula 
 from selenium import webdriver # to control browser operations 
 from playsound import playsound
+from data import settings
+from time import ctime, time
+print(settings)
+
+def log(msg):
+    global settings
+    if settings['debug'] == True:
+        log = open('.genisislog', 'a')
+        log.write(str(ctime(time())) + ' : ' + msg + '\n')
+        log.close()
 
 def assistant_speaks(output): 
-
-	# num to rename every audio file 
-	# with different name to remove ambiguity 
+        global settings, log
         print("Genisis : ", output)
-    
-        toSpeak = gTTS(text = output, lang ='en', slow = False) 
+        log( 'Genisis: ' + output)
+        toSpeak = gTTS(text = output, lang =settings['voice'], slow = False) 
 	# saving the audio file given by google text to speech 
         toSpeak.save('.output.mp3') 
 	
 	# playsound package is used to play the same file.
-        os.system('play -q .output.mp3')
+        #os.system('play -q .output.mp3')
 
 
 
@@ -45,81 +53,85 @@ def get_audio():
 		return 0
         """
         audio = input('YOU: ')
+        log('You: ' + audio)
         return audio
 
+
+def speak(text):
+    assistant_speaks(text)
+
+def raw_log(text):
+    log = open('.genisislog', 'a')
+    log.write(text)
+    log.close()
+
+
+
+
+def parse_for(start, end, string):
+    global log
+    log('SYSTEM : parsefor called')
+    return string[string.find(start)+len(start):string.rfind(end)]
+
 def process_text(Input): 
-	 try: 
-		 if 'search' in Input or 'play' in Input: 
-			 # a basic web crawler using selenium 
-			 search_web(Input) 
-			 return
-		 
-		 elif "who are you" in Input or "define yourself" in Input: 
-			 speak = '''Hello, I am Genisis'''		 
-		 elif "who made you" in Input or "created you" in Input: 
-			 speak = "I have been created by Code Long And Prosper 90"
-			 assistant_speaks(speak) 
-			 return
-		 
-		 elif "geeksforgeeks" in Input:# just 
-			 speak = """Geeks for Geeks is the Best Online Coding Platform for learning."""
-			 assistant_speaks(speak) 
-			 return
-			 
-		 elif "calculate" in Input.lower(): 
-		 
-			 # write your wolframalpha app_id here 
-			 app_id = "WOLFRAMALPHA_APP_ID" 
-			 client = wolframalpha.Client(app_id) 
-			 
-			 indx = Input.lower().split().index('calculate') 
-			 query = Input.split()[indx + 1:] 
-			 res = client.query(' '.join(query)) 
-			 answer = next(res.results).text 
-			 assistant_speaks("The answer is " + answer) 
-			 return
-		 
-		 elif 'open' in Input: 
-		 
-			 # another function to open 
-			 # different application availaible 
-			 open_application(Input.lower()) 
-			 return
-		 
-		 else: 
-			 
-			 assistant_speaks("I can search the web for you, Do you want to continue?") 
-			 ans = get_audio() 
-			 if 'yes' in str(ans) or 'yeah' in str(ans): 
-			    search_web(Input) 
-			 else: 
-			    return
-	 except : 
-		 
-		 assistant_speaks("I don't understand, I can search the web for you, Do you want to continue?") 
-		 ans = get_audio() 
-		 if 'yes' in str(ans) or 'yeah' in str(ans): 
-		    search_web(Input) 
+    global settings, log
+    if 'how are you' in Input:
+        log('YOU: Input is how are you')
+        speak('I am fine.')
+    elif 'clear log' in Input:
+        if settings['debug'] ==  True:
+            log = open('.genisislog', 'w')
+            log.write('         ===LOG CLEARED BY GENISIS ON ' + ctime(time()) + '===           \n')
+            log.close()
+            speak('I\'ve cleared the log.')
+        else:
+            speak('I\'m sorry, ' + settings['name'] + ', I can\'t let you do that')
+            Input = ''
+    if 'edit' or 'open' in Input:
+        log('COMMAND: edit')
+        if 'edit' in Input:
+            start = 'edit'
+        elif 'open' in Input:
+            start = 'open'
+        
+        if 'with' or 'in' in Input:
+            if 'with' in Input:
+                end = 'with'
+            elif 'in' in Input:
+                end = 'in'
+            filename = parse_for(start, end, Input).strip()
+            print(filename)
+            i = Input.split(' ')
+            editor = i[i.index(end)+1]
+            print(editor)
+            command = editor + ' ' + filename
+            print('Command is :' + command) 
+            os.system(command)
+        else:
+            command = settings['editor'] + Input.strip('edit')
+            os.system(command)
+            log('SYSTEM; Called os.system in edit. Command is: ' + command)
+    else:
+        assistant_speaks('Sorry, I don\'t know what you\'re talking about.') 
 
 # Driver Code 
 if __name__ == "__main__": 
-	assistant_speaks("What's your name, Human?") 
-	name ='Human'
-	name = get_audio() 
-	assistant_speaks("Hello, " + name + '.') 
-	
-	while(1): 
+    raw_log('           ===START SESSION===         \n')
+    assistant_speaks("Hello, " + settings['name'] + ', how may I help?') 
+    
+    while(1): 
 
-		assistant_speaks("What can i do for you?") 
-		text = get_audio().lower() 
+            text = get_audio().lower() 
 
-		if text == 0: 
-			continue
+            if text == 0: 
+                    continue
 
-		if "exit" in str(text) or "bye" in str(text) or "sleep" in str(text): 
-			assistant_speaks("Ok bye, "+ name+'.') 
-			break
+            if "exit" in str(text) or "bye" in str(text) or "sleep" in str(text): 
+                    assistant_speaks("Bye, "+ settings['name']+'.') 
+                    raw_log('           ===END SESSION===           \n\n')
+                    break
 
-		# calling process text to process the query 
-		process_text(text) 
+            # calling process text to process the query 
+            process_text(text) 
+            text = 0
 
