@@ -1,16 +1,18 @@
+"""
+git.py
+Created 11/11/19 by CodeLongAndProsper90
+Modifed 11/11/19
+
+Requires:
+    Linux/Bash
+    Git
+    os.system
+
+Git.py is a wrapper to run git commands without any output.
+"""
+
+
+
 from os import system
-qg = """ quiet_git() {
-    stdout=$(tempfile)
-    stderr=$(tempfile)
-
-    if ! git "$@" </dev/null >$stdout 2>$stderr; then
-        cat $stderr >&2
-        rm -f $stdout $stderr
-        exit 1
-    fi
-
-    rm -f $stdout $stderr
-}"""
 def run_git(command):
-    system(qg)
-    system('quiet_git ' + command)
+    system('git ' + command)

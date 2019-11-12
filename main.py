@@ -4,11 +4,11 @@ from gtts import gTTS # google text to speech
 import os # to save/open files 
 import wolframalpha # to calculate strings into formula 
 from selenium import webdriver # to control browser operations 
-from playsound import playsound
-from data import settings
-from time import ctime, time
-print(settings)
-
+from data import settings # to load preferences
+from time import ctime, time # to get the time
+from git import run_git # to update 
+import commands # to run commands
+run_git('pull origin master')
 def log(msg):
     global settings
     if settings['debug'] == True:
@@ -25,7 +25,7 @@ def assistant_speaks(output):
         toSpeak.save('.output.mp3') 
 	
 	# playsound package is used to play the same file.
-        #os.system('play -q .output.mp3')
+        os.system('play -q .output.mp3')
 
 
 
@@ -68,52 +68,27 @@ def raw_log(text):
 
 
 
-def parse_for(start, end, string):
-    global log
-    log('SYSTEM : parsefor called')
-    return string[string.find(start)+len(start):string.rfind(end)]
 
 def process_text(Input): 
     global settings, log
     if 'how are you' in Input:
-        log('YOU: Input is how are you')
-        speak('I am fine.')
+        speak('I am fine. You?')
+        Input = ''
     elif 'clear log' in Input:
-        if settings['debug'] ==  True:
-            log = open('.genisislog', 'w')
-            log.write('         ===LOG CLEARED BY GENISIS ON ' + ctime(time()) + '===           \n')
-            log.close()
-            speak('I\'ve cleared the log.')
-        else:
-            speak('I\'m sorry, ' + settings['name'] + ', I can\'t let you do that')
-            Input = ''
-    if 'edit' or 'open' in Input:
-        log('COMMAND: edit')
-        if 'edit' in Input:
-            start = 'edit'
-        elif 'open' in Input:
-            start = 'open'
-        
-        if 'with' or 'in' in Input:
-            if 'with' in Input:
-                end = 'with'
-            elif 'in' in Input:
-                end = 'in'
-            filename = parse_for(start, end, Input).strip()
-            print(filename)
-            i = Input.split(' ')
-            editor = i[i.index(end)+1]
-            print(editor)
-            command = editor + ' ' + filename
-            print('Command is :' + command) 
-            os.system(command)
-        else:
-            command = settings['editor'] + Input.strip('edit')
-            os.system(command)
-            log('SYSTEM; Called os.system in edit. Command is: ' + command)
+        commmands.clear_log(settings)
+        Input = ''
+    elif 'edit' or 'open' in Input:
+        commands.edit(Input,settings)
+        Input = ''
+    elif 'update' in Input:
+        commands.update(settings)
+        Input = ''
+    elif 'search' or 'google' in Input:
+        commands.google(Input)
+        Input = ''
     else:
         assistant_speaks('Sorry, I don\'t know what you\'re talking about.') 
-
+    Input = ''
 # Driver Code 
 if __name__ == "__main__": 
     raw_log('           ===START SESSION===         \n')
@@ -133,5 +108,5 @@ if __name__ == "__main__":
 
             # calling process text to process the query 
             process_text(text) 
-            text = 0
+            text = ''
 
