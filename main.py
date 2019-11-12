@@ -1,14 +1,28 @@
+"""
+Main.py
+Created by CodeLongAndProsper90 on 11/11/19
+
+Requires:
+    speechrecognition
+    gtts
+    sox
+    git
+    setup.py
+    git.py
+    .generc
+
+Main.py is the startup script for Genesis
+
+"""
 #importing speech recognition package from google api 
 import speech_recognition as sr 
 from gtts import gTTS # google text to speech 
 import os # to save/open files 
-import wolframalpha # to calculate strings into formula 
-from selenium import webdriver # to control browser operations 
-from data import settings # to load preferences
+from data import settings
+from setup import setup
 from time import ctime, time # to get the time
 from git import run_git # to update 
 import commands # to run commands
-run_git('pull origin master')
 def log(msg):
     global settings
     if settings['debug'] == True:
