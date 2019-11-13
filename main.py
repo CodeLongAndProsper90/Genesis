@@ -79,6 +79,12 @@ def raw_log(text):
     log.write(text)
     log.close()
 
+def printd(text):
+	global settings
+	if settings['debug'] == True:
+		print(text)
+	log(text)
+
 
 
 
