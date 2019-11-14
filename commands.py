@@ -10,7 +10,7 @@ Requires:
     os
 """
 import os
-from main import log
+from log import log
 
 
 def parse_for(start, end,s):
@@ -18,22 +18,9 @@ def parse_for(start, end,s):
 
 def update():
         from git import run_git
-        run_git('checkout version')
-        v = open('.oldversion.txt', 'r')
-        currentv = v.read()
-        v.close
-        v = open('.version.txt', 'r')
-        latestv = v.read()
-        v.close()
-        if int(latestv) > int(currentv):
-            speak('There is an update pending. Update?')
-            choice = get_audio()
-            if choice.lower() == 'yes' or 'y' or 'update':
-                speak('Updating...')
-                run_get('pull origin master')
-                speak('Done!')
-            else:
-                speak('Declined')
+        speak('Starting upgrade')
+        run_git('pull origin master')
+        speak('Finshed!')
 def edit(Input, settings):
         
         if 'edit' in Input:
@@ -85,3 +72,12 @@ def google(Input):
     Input = remove_first(Input, 'google')
     Input = remove_first(Input, 'search')
     os.system(settings['browser'] + 'https://google.com/search?q=' + Input)
+def update_install(settings):
+   from OS import systemp
+   from main import printd
+   if settings['debug'] ==  True:
+       systemp('sudo cp -r `pwd`/* /usr/genesis', 'echo')
+       printd('Updated.')
+   else:
+       speak('Sorry, ' + settings['name'] + ' I can\'t let you do that')
+

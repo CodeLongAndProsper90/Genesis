@@ -1,1 +1,7 @@
-{name : Scott,'voice' : 'en-uk','browser' : 'links','editor' : 'vim','debug' : True}
+settings = {
+        'name' : 'Scott',
+        'voice' : 'en-uk',
+        'browser' : 'links',
+        'editor' : 'vim',
+        'debug' : True
+        }
