@@ -8,6 +8,8 @@ It contains no exctable code
 
 Requires:
     os
+    log.py: log
+    talk.py: speak
 """
 import os
 from log import log
@@ -66,7 +68,7 @@ def clear_log(settings):
         else:
             speak('I\'m sorry, ' + settings['name'] + ', I can\'t let you do that')
 def remove_first(Input, ss):
-    return Input.repace(ss, '', 1)
+    return Input.replace(ss, '', 1)
 def google(Input):
     global settings
     Input = remove_first(Input, 'google')
@@ -74,10 +76,9 @@ def google(Input):
     os.system(settings['browser'] + 'https://google.com/search?q=' + Input)
 def update_install(settings):
    from OS import systemp
-   from main import printd
-   if settings['debug'] ==  True:
-       systemp('sudo cp -r `pwd`/* /usr/genesis', 'echo')
-       printd('Updated.')
-   else:
-       speak('Sorry, ' + settings['name'] + ' I can\'t let you do that')
+   from log import printd
+   from talk import speak
+   systemp('sudo cp -r `pwd`/* /usr/genesis', 'echo')
+   print('Updated.')
+   speak('Sorry, ' + settings['name'] + ' I can\'t let you do that')
 
